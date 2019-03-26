@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<div class="boxed" border=1>
+<form action="Page1.jsp"> 
+Username:<input type="text" name="uname"/>
+		<br/><br/>
+		Password:<input type="password" name="password"/><br><br/><br/>
+<input type="submit" value="Login"/> 
+
+</form>
+ <a href="CustomerRegistration.html"><input class="MyButton" type="button" value="Register here" ></a> 
+ </div>
+</body>
+**********************************************************************************
+<%@page contentType="text/html"%>
+<%@page pageEncoding="UTF-8"%>
+<%@page language="java" import="java.sql.*" %>
+<%@ page import = "javax.servlet.RequestDispatcher" %>
+<%int count=0;
+String FirstName=request.getParameter("uname");
+String Password=request.getParameter("password");
+try {
+	
+	Class.forName("com.mysql.jdbc.Driver");  
+
+	Connection con=DriverManager.getConnection("jdbc:MySql://localhost:3307/onlinefoodordering","root","life24*7");  
+
+	Statement ps=con.createStatement();
+	
+	
+	PreparedStatement s=con.prepareStatement("select* from customers  where (firstname=? AND password=?) ");
+	 s.setString(1,FirstName);
+	 s.setString(2,Password);
+	 ResultSet rs=s.executeQuery();
+	 
+
+    while(rs.next())
+    {count++;}
+   if(count==0){
+	   out.println("Your ID Password  is Incorrect ");
+
+   }
+   else {//response.sendRedirect("Page2.jsp");
+   RequestDispatcher rd = request.getRequestDispatcher("Page2.jsp");
+   request.setAttribute("msg",FirstName);
+   rd.forward(request, response);
+	   
+	 
+
+   }
+    
+} catch(java.sql.SQLException sqle) {
+    out.println(sqle);
+} catch(Exception e) {
+    out.println(e);
+}
+%>
+********************************************************************************
